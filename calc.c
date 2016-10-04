@@ -54,36 +54,43 @@ char bigate(char a, char b, int * carry){
 }
 
 char * add(char* num1, char* num2){
-	int max, i;
+	int max, i, j, k, len1, len2;
 	int carry = 0;
 
 	if(strlen(num1) >= strlen(num2)){
 		max = strlen(num1);
+		len1 = strlen(num1);
+		len2 = strlen(num2);
 	}else{
 		max = strlen(num2);
+		len1 = strlen(num1);
+		len2 = strlen(num2);
 	}
 
 
 	char* sum = malloc(max + 2); //the largest possible size for the sum of two numbers
+	sum[max+1] = '\0';
 
-	for(i = 0; i < max; i++){
-		if(i >= strlen(num1)){
-			sum[i] = bigate('0', num2[i], &carry);
+	for(i = len1-1, j = len2-1, k = max; i >= 0 || j >= 0; i--, j--, k--){
+		if(i < 0){
+			//printf("%c is digit num2", num2[i-1]);
+			sum[k] = bigate('0', num2[j], &carry);
 			//printf("%c", sum[i]);
-		}else if(i >= strlen(num2)){
-			sum[i] = bigate('0', num1[i], &carry);
+		}else if(j < 0){
+			//printf("%c is digit num1", num1[i-1]);
+			sum[k] = bigate('0', num1[i], &carry);
 			//printf("%c", sum[i]);
 		}else{
-			sum[i] = bigate(num1[i], num2[i], &carry);
+			//printf("%c is digit num1 and %c is digit num2", num1[i], num2[j]);
+			sum[k] = bigate(num1[i], num2[j], &carry);
 			//printf("%c", sum[i]);
 		}
 	}
 
 	if(carry == 1){
-		sum[i] = '1';
-		sum[i + 1] = '\0';
+		sum[0] = '1';
 	}else{
-		sum[i] = '\0';
+		sum[0] = ' ';
 	}
 
 	return sum;
@@ -91,8 +98,8 @@ char * add(char* num1, char* num2){
 
 
 int main(int argc, char** argv){
-	char*a = "10";
+	char*a = "111111111111111111111111111111111111111111";
 	char*b = "1";
-	printf("%s + %s = %s", a, b, add(a, b));
+	printf("%s + %s = %s\n", a, b, add(a, b));
 	return 0;
 }

@@ -1,0 +1,114 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+//adds, subtracts, multiplies numbers of difference bases
+
+char * convert(char* num, char* inbase, char* outbase){
+	if(strcmp(inbase, outbase) == 0){
+		return num;
+	}
+	char* base;
+
+	if(strcmp(inbase, "b") == 0){
+		base = "10";
+	}else if(strcmp(inbase, "o") == 0){
+		base = "1000";
+	}else if(strcmp(inbase, "d") == 0){
+		base = "1010";
+	}else if(strcmp(inbase, "x") == 0){
+		base = "10000";
+	}else{
+		base = 0;
+		printf("ERROR!");
+	}
+	return base;
+}
+
+char leftover(char* c){
+	if(c[strlen(c)-1] == '1')
+		return '1';
+	if(c[strlen(c)-1] == '3')
+		return '1';
+	if(c[strlen(c)-1] == '5')
+		return '1';
+	if(c[strlen(c)-1] == '7')
+		return '1';
+	if(c[strlen(c)-1] == '9')
+		return '1';
+
+	return '0';
+}
+
+char* divByTwo(char* num){
+	int digit, add, i;
+	char* x = malloc(strlen(num)+1);
+
+	for(i = 0; i < strlen(num); i++){
+		digit = num[i] - '0';
+		//printf("The number is %d\n", digit);
+		x[i] = digit/2 + add + '0';
+		if(digit % 2 == 1){
+			//printf("It made it here\n");
+			add = 5;
+		}else{
+			add = 0;
+		}
+		//printf("The value of x[%d] is: %c", i, x[i]);
+	}
+
+	if(strlen(x) != 0 && x[0] == '0'){
+		//printf("SWAGGG\n");
+		x++;
+	}
+	x[i] = '\0';
+	return x;
+}
+
+int* add(int* num1, int* num2){
+	int i, j, k;
+	int size1 = (int)sizeof(num1)/4;
+	int size2 = (int)sizeof(num2)/4;
+	int max;
+	if(size1 > size2){
+		max = size1;
+	}else{
+		max = size2;
+	}
+	int carry = 0;
+
+	int **sum = malloc((max+2)*4); //the largest possible size for the sum of two numbers
+
+	for(i = size1, j = size2, k = max; size1 > 0 || size2 > 0; i--, j--, k--){
+		if(i < 0){
+			*sum[max] = num2[j]^carry;
+			carry = num2[j]&carry;
+		}else if(j < 0){
+			carry = num1[i]&carry;
+			*sum[max] = num1[i]^carry;
+		}else{
+			*sum[max] = num1[i]^num2[j]^carry;
+			carry = num1[i]&num2[j] || num1[i]&carry || num2[j]&carry;
+		}
+	}
+
+	*sum[0] = carry;
+
+	return *sum;
+}
+
+
+int main(int argc, char** argv){
+
+	char* a = "12345";
+	char* b = malloc(strlen(a)*4);
+	for(int i = 0; strlen(a) != 0; i++){
+		b[i] = leftover(a);
+		//printf("Step %d: %s\n", i, a);
+		//printf("Strlen[%d] = %c" , strlen(a) ,a[strlen(a) -1]);
+		a = divByTwo(a);
+	}
+	printf("%s", b);
+	
+	return 0;
+}

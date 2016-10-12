@@ -2,27 +2,14 @@
 #include <stdlib.h>
 #include <string.h>
 
-//adds, subtracts, multiplies numbers of difference bases
+//adds, subtracts, multiplies numbers of Marie Callahandifference bases
 
-char * convert(char* num, char* inbase, char* outbase){
-	if(strcmp(inbase, outbase) == 0){
-		return num;
+void reverse(char** c){
+	for(int i = 0; i < (strlen(*c))/2; i++){
+		char temp = (*c)[i];
+		(*c)[i] = (*c)[strlen(*c) - i - 1];
+		(*c)[strlen(*c) - i - 1] = temp;
 	}
-	char* base;
-
-	if(strcmp(inbase, "b") == 0){
-		base = "10";
-	}else if(strcmp(inbase, "o") == 0){
-		base = "1000";
-	}else if(strcmp(inbase, "d") == 0){
-		base = "1010";
-	}else if(strcmp(inbase, "x") == 0){
-		base = "10000";
-	}else{
-		base = 0;
-		printf("ERROR!");
-	}
-	return base;
 }
 
 char leftover(char* c){
@@ -40,75 +27,154 @@ char leftover(char* c){
 	return '0';
 }
 
+char* multByTwo(char* num){
+	//int digit, carry, i;
+	//char* x = malloc(strlen(num)+2);
+	return 0;
+}
+
 char* divByTwo(char* num){
 	int digit, add, i;
+	add = 0;
 	char* x = malloc(strlen(num)+1);
 
 	for(i = 0; i < strlen(num); i++){
 		digit = num[i] - '0';
-		//printf("The number is %d\n", digit);
 		x[i] = digit/2 + add + '0';
 		if(digit % 2 == 1){
-			//printf("It made it here\n");
 			add = 5;
 		}else{
 			add = 0;
 		}
-		//printf("The value of x[%d] is: %c", i, x[i]);
 	}
 
 	if(strlen(x) != 0 && x[0] == '0'){
-		//printf("SWAGGG\n");
+		x[i] = '\0';
 		x++;
+	}else{
+		x[i] = '\0';
 	}
-	x[i] = '\0';
+
+	if(strlen(x) == 0){
+		free(x);
+		return 0;
+	}
 	return x;
 }
 
-int* add(int* num1, int* num2){
-	int i, j, k;
-	int size1 = (int)sizeof(num1)/4;
-	int size2 = (int)sizeof(num2)/4;
-	int max;
-	if(size1 > size2){
-		max = size1;
+char* add(char* num1, char* num2){
+	int i, j, max, a, b, carry = 0;
+	i = strlen(num1);
+	j = strlen(num2);
+	if(strlen(num1) >= strlen(num2)){
+		max = strlen(num1);
 	}else{
-		max = size2;
+		max = strlen(num2);
 	}
-	int carry = 0;
 
-	int **sum = malloc((max+2)*4); //the largest possible size for the sum of two numbers
-
-	for(i = size1, j = size2, k = max; size1 > 0 || size2 > 0; i--, j--, k--){
+	char* sum = malloc(max+2);
+	sum[max+1] = '\0';
+	for(i = strlen(num1)-1, j = strlen(num2)-1; max > 0; i--, j--, max--){
 		if(i < 0){
-			*sum[max] = num2[j]^carry;
-			carry = num2[j]&carry;
+			b = num2[j] - '0';
+			sum[max] = (b^carry) + '0';
+			carry = b&carry;
 		}else if(j < 0){
-			carry = num1[i]&carry;
-			*sum[max] = num1[i]^carry;
+			a = num1[i] - '0';
+			sum[max] = (a^carry) + '0';
+			carry = a&carry;
 		}else{
-			*sum[max] = num1[i]^num2[j]^carry;
-			carry = num1[i]&num2[j] || num1[i]&carry || num2[j]&carry;
+			a = num1[i] - '0';
+			b = num2[j] - '0';
+			sum[max] = ((a^b)^carry) + '0';
+			carry = a&b || a&carry || b&carry;
+		}
+	}
+	if(carry == 1){
+		sum[0] = '1';
+	}else{
+		sum++;
+	}
+
+	return sum;
+}
+
+char* decToBin(char* a){
+	char* b = malloc(strlen(a)*4);
+	int i;
+	for(i = 0; a != 0; i++){
+		b[i] = leftover(a);
+		a = divByTwo(a);
+	}
+	b[i] = '\0';
+	reverse(&b);
+	return b;
+}
+
+char* binToDec(char* a){
+	char* b = malloc(strlen(a));
+	int i;
+	for(i = 0; a != 0; i++){
+		if(a[i] == '1'){
+
+		}
+	}
+	b[i] = '\0';
+	return b;
+}
+
+char * multiply(char* a, char* b){
+	char* product = malloc((strlen(a) + strlen(b))*2);
+	if(strlen(a) >= strlen(b)){
+		while(strlen(a) > 0){
+			if(a[0] == '1'){
+				product = add(product, b);
+			}
+			strncat(b, "0", 1);
+			a++;
+		}
+	}else{
+		while(strlen(b) > 0){
+			if(b[0] == '1'){
+				product = add(product, a);
+			}
+			strncat(a, "0", 1);
+			b++;
 		}
 	}
 
-	*sum[0] = carry;
-
-	return *sum;
+	return product;
 }
 
 
 int main(int argc, char** argv){
+	char* op = argv[1];
+	char* a = argv[2];
+	char* b = argv[3];
+	char* base = argv[4];
 
-	char* a = "12345";
-	char* b = malloc(strlen(a)*4);
-	for(int i = 0; strlen(a) != 0; i++){
-		b[i] = leftover(a);
-		//printf("Step %d: %s\n", i, a);
-		//printf("Strlen[%d] = %c" , strlen(a) ,a[strlen(a) -1]);
-		a = divByTwo(a);
-	}
-	printf("%s", b);
-	
+	printf("The product is %s", multiply(a, b));
+
+	/*if(strncmp("+", op, strlen(op)) == 0){
+		if(a[0] == '-' && b[0] == '-'){
+			a++;
+			b++;
+			a = decToBin(a);
+			b = decToBin(b);
+			printf("\n-%s + -%s = -%s\n", a, b, add(a,b));
+		}
+		else{
+			a = decToBin(a);
+			b = decToBin(b);
+			printf("\n%s + %s = %s\n", a, b, add(a,b));
+		}
+	}else if(strncmp("-", op, strlen(op)) == 0){
+
+	}else if(strncmp("*", op, strlen(op)) == 0){
+
+	}else{
+		printf("%s is not a valid operation!", op);
+	}*/
+
 	return 0;
 }

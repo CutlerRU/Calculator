@@ -1,3 +1,4 @@
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -5,11 +6,25 @@
 //adds, subtracts, multiplies numbers of Marie Callahandifference bases
 
 void reverse(char** c){
-	for(int i = 0; i < (strlen(*c))/2; i++){
+	int i;
+	for(i = 0; i < (strlen(*c))/2; i++){
 		char temp = (*c)[i];
 		(*c)[i] = (*c)[strlen(*c) - i - 1];
 		(*c)[strlen(*c) - i - 1] = temp;
 	}
+}
+
+void prepend(char* s, const char* t)
+{
+    size_t len = strlen(t);
+    size_t i;
+
+    memmove(s + len, s, strlen(s) + 1);
+
+    for (i = 0; i < len; ++i)
+    {
+        s[i] = t[i];
+    }
 }
 
 char leftover(char* c){
@@ -28,9 +43,38 @@ char leftover(char* c){
 }
 
 char* multByTwo(char* num){
-	//int digit, carry, i;
-	//char* x = malloc(strlen(num)+2);
-	return 0;
+	int digit, i;
+	int j = 0;
+	int carry = 0;
+	char* x = malloc(strlen(num)+2);
+	for(i = 0; i < strlen(num); j++, i++){
+		digit = num[i] - '0';
+		//printf("The value of digit is: %d\n", digit);
+		digit = digit*2;
+		//printf("The value of digitx2 is: %d\n", digit);
+		if(digit >= 10){
+			//printf("The value is > 10");
+			x[j] = digit%10 + '0';
+			x[j] = x[j] + carry;
+			carry = 1;
+		}else{
+			//printf("The value is < 10");
+			x[j] = digit + '0';
+			x[j] = x[j] + carry;
+			carry = 0;
+		}
+	}
+	//printf("The value of j is %d and carry is %d\n", j, carry);
+	if(carry == 1){
+		//printf("IT GOT HERE!!!");
+		x[j] = carry + '0';
+		x[j+1] = '\0';
+	}else{
+		x[j] = '\0';
+	}
+
+	//printf("\n\n%s\n\n", x);
+	return x;
 }
 
 char* divByTwo(char* num){
@@ -56,7 +100,6 @@ char* divByTwo(char* num){
 	}
 
 	if(strlen(x) == 0){
-		free(x);
 		return 0;
 	}
 	return x;
@@ -99,6 +142,217 @@ char* add(char* num1, char* num2){
 	return sum;
 }
 
+char* hexToBin(char* a){
+	char* b = malloc(strlen(a)*4);
+	int i;
+	for(i = 0; i < strlen(a); i++){
+		switch(a[i]){
+			case '0':
+				strncat(b, "0000",4);
+				break;
+
+			case '1':
+				strncat(b, "0001",4);
+				break;
+
+			case '2':
+				strncat(b, "0010",4);
+				break;
+
+			case '3':
+				strncat(b, "0011",4);
+				break;
+
+			case '4':
+				strncat(b, "0100",4);
+				break;
+
+			case '5':
+				strncat(b, "0101",4);
+				break;
+
+			case '6':
+				strncat(b, "0110",4);
+				break;
+
+			case '7':
+				strncat(b, "0111",4);
+				break;
+
+			case '8':
+				strncat(b, "1000",4);
+				break;
+
+			case '9':
+				strncat(b, "1001",4);
+				break;
+
+			case 'a':
+				strncat(b, "1010",4);
+				break;
+
+			case 'b':
+				strncat(b, "1011",4);
+				break;
+
+			case 'c':
+				strncat(b, "1100",4);
+				break;
+
+			case 'd':
+				strncat(b, "1101",4);
+				break;
+
+			case 'e':
+				strncat(b, "1110",4);
+				break;
+
+			case 'f':
+				strncat(b, "1111",4);
+				break;
+
+		}
+	}
+	while(b[0] == '0'){
+		b++;
+	}
+	return b;
+}
+
+char* binToHex(char* s){
+	char* a = malloc(strlen(s)+4);
+	strcpy(a, s);
+	while(strlen(a) % 4 != 0){
+		prepend(a, "0");
+	}
+
+	char* b = malloc(strlen(a)/4);
+	for(int i = 0; strlen(a) > 0; i++){
+		char test[4];
+		strncpy(test, a, 4);
+			if(strncmp(test, "0000", 4) == 0){
+				b[i] = '0';
+			}else if(strncmp(test, "0001", 4) == 0){
+				b[i] = '1';
+			}else if(strncmp(test, "0010", 4) == 0){
+				b[i] = '2';
+			}else if(strncmp(test, "0011", 4) == 0){
+				b[i] = '3';
+			}else if(strncmp(test, "0100", 4) == 0){
+				b[i] = '4';
+			}else if(strncmp(test, "0101", 4) == 0){
+				b[i] = '5';
+			}else if(strncmp(test, "0110", 4) == 0){
+				b[i] = '6';
+			}else if(strncmp(test, "0111", 4) == 0){
+				b[i] = '7';
+			}else if(strncmp(test, "1000", 4) == 0){
+				b[i] = '8';
+			}else if(strncmp(test, "1001", 4) == 0){
+				b[i] = '9';
+			}else if(strncmp(test, "1010", 4) == 0){
+				b[i] = 'a';
+			}else if(strncmp(test, "1011", 4) == 0){
+				b[i] = 'b';
+			}else if(strncmp(test, "1100", 4) == 0){
+				b[i] = 'c';
+			}else if(strncmp(test, "1101", 4) == 0){
+				b[i] = 'd';
+			}else if(strncmp(test, "1110", 4) == 0){
+				b[i] = 'e';
+			}else if(strncmp(test, "1111", 4) == 0){
+				b[i] = 'f';
+			}
+			a+= 4;
+		}
+	//free(a);
+	while(b[0] == '0'){
+		b++;
+	}
+	return b;
+}
+
+char* octToBin(char* a){
+	char* b = malloc(strlen(a)*3);
+	int i;
+	for(i = 0; i < strlen(a); i++){
+		switch(a[i]){
+			case '0':
+				strncat(b, "000",3);
+				break;
+
+			case '1':
+				strncat(b, "001",3);
+				break;
+
+			case '2':
+				strncat(b, "010",3);
+				break;
+
+			case '3':
+				strncat(b, "011",3);
+				break;
+
+			case '4':
+				strncat(b, "100",3);
+				break;
+
+			case '5':
+				strncat(b, "101",3);
+				break;
+
+			case '6':
+				strncat(b, "110",3);
+				break;
+
+			case '7':
+				strncat(b, "111",3);
+				break;
+			}
+		}
+	while(b[0] == '0'){
+		b++;
+	}
+	return b;
+}
+
+char* binToOct(char* s){
+	char* a = malloc(strlen(s)+3);
+	strcpy(a, s);
+	while(strlen(a) % 3 != 0){
+		prepend(a, "0");
+	}
+
+	char* b = malloc(strlen(a)/3);
+	for(int i = 0; strlen(a) > 0; i++){
+		char test[3];
+		strncpy(test, a, 3);
+		if(strncmp(test, "000", 3) == 0){
+			b[i] = '0';
+		}else if(strncmp(test, "001", 3) == 0){
+			b[i] = '1';
+		}else if(strncmp(test, "010", 3) == 0){
+			b[i] = '2';
+		}else if(strncmp(test, "011", 3) == 0){
+			b[i] = '3';
+		}else if(strncmp(test, "100", 3) == 0){
+			b[i] = '4';
+		}else if(strncmp(test, "101", 3) == 0){
+			b[i] = '5';
+		}else if(strncmp(test, "110", 3) == 0){
+			b[i] = '6';
+		}else if(strncmp(test, "111", 3) == 0){
+			b[i] = '7';
+		}
+		a+= 3;
+	}
+	//free(a);
+	while(b[0] == '0'){
+		b++;
+	}
+	return b;
+}
+
 char* decToBin(char* a){
 	char* b = malloc(strlen(a)*4);
 	int i;
@@ -113,68 +367,143 @@ char* decToBin(char* a){
 
 char* binToDec(char* a){
 	char* b = malloc(strlen(a));
-	int i;
-	for(i = 0; a != 0; i++){
-		if(a[i] == '1'){
-
+	int i, j;
+	for(i = 0; strlen(a) > 0; i++, a++){
+		//printf("The value is: %s\n", b);
+		b = multByTwo(b);
+		if(a[0] == '1'){
+			for(j = 0; j < strlen(b); j++){
+				if(b[j] != '9'){
+					b[j] = b[j] + 1;
+					j = strlen(b)+2;
+				}else{
+					b[j] = '0';
+				}
+			}
+			if(j == strlen(b)){
+				b[j] = '1';
+			}
 		}
+		//printf("The new value is: %s\n", b);
 	}
-	b[i] = '\0';
+	//printf("i is value %d\n", i);
+	b[j+2] = '\0';
+	reverse(&b);
 	return b;
 }
 
 char * multiply(char* a, char* b){
 	char* product = malloc((strlen(a) + strlen(b))*2);
-	if(strlen(a) >= strlen(b)){
+	product = "0";
+
 		while(strlen(a) > 0){
-			if(a[0] == '1'){
+			//printf("a[%d] = %c", strlen(a)-1, a[strlen(a)-1]);
+			if(a[strlen(a)-1] == '1'){
+				//printf("Add %s to %s\n", b, product);
 				product = add(product, b);
 			}
 			strncat(b, "0", 1);
-			a++;
+			a[strlen(a) - 1] = '\0';
 		}
-	}else{
-		while(strlen(b) > 0){
-			if(b[0] == '1'){
-				product = add(product, a);
-			}
-			strncat(a, "0", 1);
-			b++;
-		}
-	}
 
 	return product;
 }
 
 
 int main(int argc, char** argv){
+	int negative = 0;
 	char* op = argv[1];
 	char* a = argv[2];
 	char* b = argv[3];
 	char* base = argv[4];
 
-	printf("The product is %s", multiply(a, b));
+	printf("%s", binToOct(a));
 
-	/*if(strncmp("+", op, strlen(op)) == 0){
+	if(strncmp("+", op, strlen(op)) == 0){
+
 		if(a[0] == '-' && b[0] == '-'){
 			a++;
 			b++;
-			a = decToBin(a);
-			b = decToBin(b);
-			printf("\n-%s + -%s = -%s\n", a, b, add(a,b));
+			negative = 1;
 		}
-		else{
-			a = decToBin(a);
-			b = decToBin(b);
-			printf("\n%s + %s = %s\n", a, b, add(a,b));
+		else if(a[0] == '-'){
+			a++;
+		}
+
+		if(base[0] == 'b'){
+			printf("The product is: b%s\n", multiply(a,b));
+		}else if(base[0] == 'o'){
+			printf("The product is: o%s\n", binToOct(multiply(a,b)));
+		}else if(base[0] == 'd'){
+			printf("The product is: d%s\n", binToDec(multiply(a,b)));
+		}else if(base[0] == 'h'){
+			printf("The product is: h%s\n", binToHex(multiply(a,b)));
 		}
 	}else if(strncmp("-", op, strlen(op)) == 0){
 
-	}else if(strncmp("*", op, strlen(op)) == 0){
+		if(base[0] == 'b'){
+			printf("The product is: b%s\n", multiply(a,b));
+		}else if(base[0] == 'o'){
+			printf("The product is: o%s\n", binToOct(multiply(a,b)));
+		}else if(base[0] == 'd'){
+			printf("The product is: d%s\n", binToDec(multiply(a,b)));
+		}else if(base[0] == 'h'){
+			printf("The product is: h%s\n", binToHex(multiply(a,b)));
+		}
 
+	}else if(strncmp("*", op, strlen(op)) == 0){
+		if(a[0] == '-' && b[0] == '-'){
+			a = decToBin(a);
+			b = decToBin(b);
+			printf("The product is: b%s\n", multiply(a,b));
+		}else if(a[0] == '-' || b[0] == '-'){
+			a = decToBin(a);
+			b = decToBin(b);
+			printf("The product is: -b%s\n", multiply(a,b));
+		}else{
+			if(a[0] == 'b'){
+				a++;
+			}else if(a[0] == 'd'){
+				a++;
+				a = decToBin(a);
+			}else if(a[0] == 'o'){
+				a++;
+				a = octToBin(a);
+			}else if(a[0] == 'h'){
+				a++;
+				a = hexToBin(a);
+			}else{
+				printf("Improper format!");
+			}
+
+			if(b[0] == 'b'){
+				b++;
+			}else if(b[0] == 'd'){
+				b++;
+				b = decToBin(b);
+			}else if(b[0] == 'o'){
+				b++;
+				b = octToBin(b);
+			}else if(b[0] == 'h'){
+				b++;
+				b = hexToBin(b);
+			}else{
+				printf("Improper format!");
+			}
+
+			if(base[0] == 'b'){
+				printf("The product is: b%s\n", multiply(a,b));
+			}else if(base[0] == 'o'){
+				printf("The product is: o%s\n", binToOct(multiply(a,b)));
+			}else if(base[0] == 'd'){
+				printf("The product is: d%s\n", binToDec(multiply(a,b)));
+			}else if(base[0] == 'h'){
+				printf("The product is: h%s\n", binToHex(multiply(a,b)));
+			}
+		}
 	}else{
 		printf("%s is not a valid operation!", op);
-	}*/
+	}
 
 	return 0;
 }

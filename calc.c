@@ -1,3 +1,4 @@
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -5,7 +6,8 @@
 //adds, subtracts, multiplies numbers of Marie Callahandifference bases
 
 void reverse(char** c){
-	for(int i = 0; i < (strlen(*c))/2; i++){
+	int i;
+	for(i = 0; i < (strlen(*c))/2; i++){
 		char temp = (*c)[i];
 		(*c)[i] = (*c)[strlen(*c) - i - 1];
 		(*c)[strlen(*c) - i - 1] = temp;
@@ -28,9 +30,38 @@ char leftover(char* c){
 }
 
 char* multByTwo(char* num){
-	//int digit, carry, i;
-	//char* x = malloc(strlen(num)+2);
-	return 0;
+	int digit, i;
+	int j = 0;
+	int carry = 0;
+	char* x = malloc(strlen(num)+2);
+	for(i = 0; i < strlen(num); j++, i++){
+		digit = num[i] - '0';
+		//printf("The value of digit is: %d\n", digit);
+		digit = digit*2;
+		//printf("The value of digitx2 is: %d\n", digit);
+		if(digit >= 10){
+			//printf("The value is > 10");
+			x[j] = digit%10 + '0';
+			x[j] = x[j] + carry;
+			carry = 1;
+		}else{
+			//printf("The value is < 10");
+			x[j] = digit + '0';
+			x[j] = x[j] + carry;
+			carry = 0;
+		}
+	}
+	//printf("The value of j is %d and carry is %d\n", j, carry);
+	if(carry == 1){
+		//printf("IT GOT HERE!!!");
+		x[j] = carry + '0';
+		x[j+1] = '\0';
+	}else{
+		x[j] = '\0';
+	}
+
+	//printf("\n\n%s\n\n", x);
+	return x;
 }
 
 char* divByTwo(char* num){
@@ -56,7 +87,6 @@ char* divByTwo(char* num){
 	}
 
 	if(strlen(x) == 0){
-		free(x);
 		return 0;
 	}
 	return x;
@@ -113,19 +143,46 @@ char* decToBin(char* a){
 
 char* binToDec(char* a){
 	char* b = malloc(strlen(a));
-	int i;
-	for(i = 0; a != 0; i++){
-		if(a[i] == '1'){
-
+	int i, j;
+	for(i = 0; strlen(a) > 0; i++, a++){
+		//printf("The value is: %s\n", b);
+		b = multByTwo(b);
+		if(a[0] == '1'){
+			for(j = 0; j < strlen(b); j++){
+				if(b[j] != '9'){
+					b[j] = b[j] + 1;
+					j = strlen(b)+2;
+				}else{
+					b[j] = '0';
+				}
+			}
+			if(j == strlen(b)){
+				b[j] = '1';
+			}
 		}
+		//printf("The new value is: %s\n", b);
 	}
-	b[i] = '\0';
+	//printf("i is value %d\n", i);
+	b[j+2] = '\0';
+	reverse(&b);
 	return b;
 }
 
 char * multiply(char* a, char* b){
 	char* product = malloc((strlen(a) + strlen(b))*2);
-	
+	product = "0";
+
+		while(strlen(a) > 0){
+			printf("a[%d] = %c", strlen(a)-1, a[strlen(a)-1]);
+			if(a[strlen(a)-1] == '1'){
+				//printf("Add %s to %s\n", b, product);
+				product = add(product, b);
+			}
+			strncat(b, "0", 1);
+			a[strlen(a) - 1] = '\0';
+		}
+
+	return product;
 }
 
 
@@ -135,9 +192,9 @@ int main(int argc, char** argv){
 	char* b = argv[3];
 	char* base = argv[4];
 
-	printf("%s", op);
+	printf("%s to decimal is: %s", a, binToDec(a));
 
-	if(strncmp("+", op, strlen(op)) == 0){
+	/*if(strncmp("+", op, strlen(op)) == 0){
 		if(a[0] == '-' && b[0] == '-'){
 			a++;
 			b++;
@@ -153,10 +210,22 @@ int main(int argc, char** argv){
 	}else if(strncmp("-", op, strlen(op)) == 0){
 
 	}else if(strncmp("*", op, strlen(op)) == 0){
-
+			if(a[0] == '-' && b[0] == '-'){
+				a = decToBin(a);
+				b = decToBin(b);
+				printf("The product is: b%s\n", multiply(a,b));
+			}else if(a[0] == '-' || b[0] == '-'){
+				a = decToBin(a);
+				b = decToBin(b);
+				printf("The product is: -b%s\n", multiply(a,b));
+			}else{
+				a = decToBin(a);
+				b = decToBin(b);
+				printf("The product is: b%s\n", multiply(a,b));
+			}
 	}else{
 		printf("%s is not a valid operation!", op);
-	}
+	}*/
 
 	return 0;
 }
